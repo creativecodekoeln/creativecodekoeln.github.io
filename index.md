@@ -23,4 +23,4 @@ Please make sure you agree with its content - we will not tolerate any harassmen
 
 ## Contact
 
-Creative Code Köln is organized by Naoto Hieda (mail@naotohieda.com). If you have an idea for an event (workshop, presentation, etc.), feel free to contact the organizer. Also, if you have any specific needs for accessibility, please contact the organizer.
+Creative Code Köln is organized by [Naoto Hieda](https://naotohieda.com) (mail@naotohieda.com). If you have an idea for an event (workshop, presentation, etc.), feel free to contact the organizer. Also, if you have any specific needs for accessibility, please contact the organizer.
