@@ -53,18 +53,139 @@
   {% endif %}
 
   <script>
+    function ColorScheme(colorString) {
+      this.colors = [];
+      {
+        let a = colorString.split("/");
+        let cs = a[a.length - 1].split("-");
+        for (let i in cs) {
+          let r = parseInt("0x" + cs[i].substring(0, 2));
+          let g = parseInt("0x" + cs[i].substring(2, 4));
+          let b = parseInt("0x" + cs[i].substring(4, 6));
+          this.colors.push({ r: r, g: g, b: b });
+        }
+      }
+      this.offset = 0;
+    }
+
+    ColorScheme.prototype.get = function (i) {
+      i = Math.min(this.colors.length - 1, Math.max(0, i));
+      return this.colors[(i + this.offset) % this.colors.length];
+    }
+
+    let colorSchemes = [
+      new ColorScheme('https://coolors.co/19381f-eee82c-91cb3e-53a548-4c934c'),
+      // new ColorScheme('https://coolors.co/3a4f41-b9314f-d5a18e-dec3be-e1dee3'),
+      new ColorScheme('https://coolors.co/246eb9-4cb944-fdfffc-f5ee9e-f06543')];
+    let colorIndex = Math.floor(Math.random() * colorSchemes.length);
+    function setColor(parent, func, index, alpha) {
+      if (alpha == undefined) alpha = 255;
+      parent[func](colorSchemes[colorIndex].get(index).r, colorSchemes[colorIndex].get(index).g, colorSchemes[colorIndex].get(index).b, alpha);
+    }
+    // https://gist.github.com/gre/1650294
+    Easing = {
+      // no easing, no acceleration
+      linear: function (t) { return t },
+      // accelerating from zero velocity
+      easeInQuad: function (t) { return t * t },
+      // decelerating to zero velocity
+      easeOutQuad: function (t) { return t * (2 - t) },
+      // acceleration until halfway, then deceleration
+      easeInOutQuad: function (t) { return t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t },
+      // accelerating from zero velocity 
+      easeInCubic: function (t) { return t * t * t },
+      // decelerating to zero velocity 
+      easeOutCubic: function (t) { return (--t) * t * t + 1 },
+      // acceleration until halfway, then deceleration 
+      easeInOutCubic: function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 },
+      // accelerating from zero velocity 
+      easeInQuart: function (t) { return t * t * t * t },
+      // decelerating to zero velocity 
+      easeOutQuart: function (t) { return 1 - (--t) * t * t * t },
+      // acceleration until halfway, then deceleration
+      easeInOutQuart: function (t) { return t < .5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t },
+      // accelerating from zero velocity
+      easeInQuint: function (t) { return t * t * t * t * t },
+      // decelerating to zero velocity
+      easeOutQuint: function (t) { return 1 + (--t) * t * t * t * t },
+      // acceleration until halfway, then deceleration 
+      easeInOutQuint: function (t) { return t < .5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t }
+    }
     let sketch = function (p) {
+      class Bar {
+        constructor({ phase, index, x, h, w }) {
+          this.phase = phase;
+          this.index = index;
+          this.x = x;
+          this.h = h;
+          this.w = w;
+          this.orgX = x;
+          this.toX = x;
+          this.fromX = x;
+        }
+        draw(t) {
+          let x = p.lerp(this.fromX, this.toX, Easing.easeInOutCubic(t % 1));
+          let h = (Math.sin(t + this.phase) * 0.5 + 0.5) * p.height;
+          setColor(p, 'fill', (this.index + 2) % 5);
+          p.rect(x, 0, this.w / 2, p.height);
+          setColor(p, 'fill', this.index % 5);
+          p.rect(x, h, this.w / 2, p.height - h);
+        }
+        origin() {
+          this.toX = this.orgX;
+        }
+      }
+      let bars = [];
+      let lastT = 0;
+      let shuffleCount = 0;
       p.setup = function () {
         p.createCanvas(p.select('.page-header').width, p.select('.page-header').height);
+        let w = p.width / 16;
+        for (let i = 0; i < 16; i++) {
+          let x = i * w;
+          let phase = i * Math.PI * 0.125;
+          bars.push(new Bar({ phase, index: i, x, w }));
+        }
+        setColor(p, 'background', 0);
       }
       p.draw = function () {
-        p.background(0, 100, 10);
         let t = p.millis() * 0.001;
-        let h = (Math.sin(t) * 0.5 + 0.5) * p.height;
-        p.line(0, h, p.width, p.height - h);
+
+        if (Math.floor(t) - Math.floor(lastT) > 0) {
+          for (let b of bars) {
+            b.fromX = b.toX;
+          }
+          if (shuffleCount >= 7) {
+            for (let b of bars) {
+              b.origin();
+            }
+            shuffleCount = 0;
+          }
+          else {
+            let b0 = p.random(bars);
+            let b1 = p.random(bars);
+            b0.toX = b1.fromX;
+            b1.toX = b0.fromX;
+            shuffleCount++;
+          }
+        }
+
+        let w = p.width / 16;
+        p.noStroke();
+        for (let i = 0; i < bars.length; i++) {
+          bars[i].draw(t);
+        }
+        lastT = t;
       }
       p.windowResized = function () {
         p.resizeCanvas(p.select('.page-header').width, p.select('.page-header').height);
+        bars = [];
+        let w = p.width / 16;
+        for (let i = 0; i < 16; i++) {
+          let x = i * w;
+          let phase = i * Math.PI * 0.125;
+          bars.push(new Bar({ phase, index: i, x, w }));
+        }
       }
     };
     new p5(sketch, 'container');
