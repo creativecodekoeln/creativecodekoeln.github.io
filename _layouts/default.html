@@ -127,9 +127,9 @@
           let x = p.lerp(this.fromX, this.toX, Easing.easeInOutCubic(t % 1));
           let h = (Math.sin(t + this.phase) * 0.5 + 0.5) * p.height;
           setColor(p, 'fill', (this.index + 2) % 5);
-          p.rect(x, 0, this.w / 2, p.height);
+          p.rect(x, 0, this.w / 1, p.height);
           setColor(p, 'fill', this.index % 5);
-          p.rect(x, h, this.w / 2, p.height - h);
+          p.rect(x, h, this.w / 1, p.height - h);
         }
         origin() {
           this.toX = this.orgX;
