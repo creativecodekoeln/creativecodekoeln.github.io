@@ -4,9 +4,11 @@ layout: default
 
 # Creative Code Köln
 
+**!!! Currently due to COVID-19, meetups are suspended !!!**
+
 Creative Code Köln is a diverse community of coders, artists, hobbyists, and anyone interested in the intersection of code and art. Independently of schools or institutions, our mission is to offer a safe space for everyone interested in code and art, no matter what your skill is!
 
-Currently, we organize a meetup once a week, which is free of charge and open to everyone. There is no fixed format unless otherwise announced - you can show up whenever you want during the meetup, and bring your laptop to work on your projects, or simply talk about your ideas with other community members. Please check [akkuraum meetup page](https://www.meetup.com/en-AU/akkuraum/){:target="_blank"} for more details.
+Currently, we organize a meetup on Thursday evenings, which is free of charge and open to everyone. There is no fixed format unless otherwise announced - you can show up whenever you want during the meetup, and bring your laptop to work on your projects, or simply talk about your ideas with other community members. Please check [akkuraum meetup page](https://www.meetup.com/en-AU/akkuraum/){:target="_blank"} for more details.
 
 ## Creative Coding
 
